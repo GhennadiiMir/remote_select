@@ -25,6 +25,7 @@ Gem::Specification.new do |spec|
     "lib/**/*",
     "app/**/*",
     "config/**/*",
+    "COPILOT_INSTRUCTIONS.md",
     "LICENSE",
     "README.md",
     "CHANGELOG.md"

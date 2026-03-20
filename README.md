@@ -16,7 +16,8 @@ Replaces Select2 / Tom Select for the common case of "type to search a remote li
 - **Preselected values** — display preselected options on page load
 - **i18n** — default strings resolved via `I18n.t` with English fallbacks
 - **Turbo compatible** — full-page navigation and Turbo Frames, no Stimulus required
-- **No dependencies** — pure vanilla JavaScript
+- **Select2-compatible** — accepts Select2 `pagination.more` response format out of the box
+- **No dependencies** — pure vanilla JavaScript (ES2020)
 
 ## Installation
 
@@ -32,9 +33,26 @@ Run:
 bundle install
 ```
 
-### JavaScript
+Then run the install generator to copy JS and CSS into your app:
 
-**Importmap** (Rails 8 default):
+```bash
+rails generate remote_select:install
+```
+
+The generator copies two files and prints setup instructions for your specific asset pipeline (esbuild, importmap, Sprockets, etc.).
+
+Use `--force` to overwrite previously copied files when updating the gem:
+
+```bash
+rails generate remote_select:install --force
+```
+
+### Manual setup (if you prefer not to use the generator)
+
+<details>
+<summary>Importmap (Rails 8 default)</summary>
+
+No generator needed — importmap resolves from the engine automatically.
 
 ```ruby
 # config/importmap.rb
@@ -46,31 +64,46 @@ pin "remote_select", to: "remote_select.js"
 import "remote_select"
 ```
 
-**esbuild / rollup / webpack**:
-
-```js
-import "remote_select"
-```
-
-**Sprockets** (`application.js`):
-
-```js
-//= require remote_select
-```
-
-### Stylesheet
-
-**Sass / SCSS**:
-
-```scss
-@import 'remote_select';
-```
-
-**Sprockets** (`application.css`):
+For CSS, add to `application.css`:
 
 ```css
 /*= require remote_select */
 ```
+
+</details>
+
+<details>
+<summary>Sprockets (no bundler)</summary>
+
+```js
+// app/assets/javascripts/application.js
+//= require remote_select
+```
+
+```css
+/* app/assets/stylesheets/application.css */
+/*= require remote_select */
+```
+
+</details>
+
+<details>
+<summary>esbuild / rollup / webpack (jsbundling-rails)</summary>
+
+Run the generator first (see above), then:
+
+```js
+// app/javascript/application.js
+import "./remote_select"
+```
+
+For CSS, add to your SCSS/CSS entry:
+
+```scss
+@import './remote_select';
+```
+
+</details>
 
 ## Usage
 
@@ -144,7 +177,9 @@ en:
 
 ## Backend endpoint
 
-Your action must return JSON:
+Your action must return JSON with a `results` array. Pagination is optional.
+
+### Recommended format
 
 ```ruby
 def search_companies
@@ -166,8 +201,6 @@ def search_companies
 end
 ```
 
-### Required response shape
-
 ```json
 {
   "results":  [{ "id": 1, "text": "Acme Corp" }],
@@ -175,6 +208,19 @@ end
   "total":    150
 }
 ```
+
+### Select2-compatible format (also accepted)
+
+If you're migrating from Select2, your existing endpoints work as-is:
+
+```json
+{
+  "results":  [{ "id": 1, "text": "Acme Corp" }],
+  "pagination": { "more": true }
+}
+```
+
+Both `has_more` and `pagination.more` are recognized. If neither is present, pagination is disabled.
 
 ## Theming
 
@@ -189,6 +235,23 @@ All visual properties are CSS custom properties on `.remote-select-container`. O
   --rs-dropdown-max-height: 400px;
 }
 ```
+
+### Available CSS custom properties
+
+| Property | Default | Description |
+|----------|---------|-------------|
+| `--rs-text-color` | `#212529` | Main text color |
+| `--rs-muted-color` | `#6c757d` | Placeholder / message color |
+| `--rs-bg-color` | `#fff` | Background |
+| `--rs-border-color` | `#dee2e6` | Border color |
+| `--rs-border-radius` | `0.375rem` | Corner radius |
+| `--rs-focus-border-color` | `#86b7fe` | Focus ring border |
+| `--rs-focus-shadow` | blue 0.25rem | Focus ring shadow |
+| `--rs-item-hover-bg` | `#e9ecef` | Hovered item background |
+| `--rs-error-color` | `#dc3545` | Error text color |
+| `--rs-zindex` | `1050` | Dropdown z-index |
+| `--rs-dropdown-max-height` | `300px` | Dropdown max height |
+| `--rs-results-max-height` | `250px` | Results list max height |
 
 ## JavaScript API
 
@@ -209,7 +272,7 @@ rs.destroy();                     // remove all listeners + DOM
 
 ## Browser support
 
-Modern browsers (Chrome, Firefox, Safari, Edge). Requires ES2020 (`??`, `async/await`, `AbortController`). No IE11.
+Modern browsers (Chrome, Firefox, Safari, Edge). Requires ES2020 (`??`, `?.`, `async/await`, `AbortController`). No IE11.
 
 ## License
 

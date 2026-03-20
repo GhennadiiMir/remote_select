@@ -1,3 +1,4 @@
+// remote_select v0.2.0 — https://github.com/GhennadiiMir/remote_select
 /**
  * RemoteSelect - Vanilla JS remote data select component
  * A lightweight replacement for select2/tom-select with remote data source
@@ -263,7 +264,7 @@ class RemoteSelect {
 
       const data   = await response.json();
       this.results = append ? [...this.results, ...data.results] : data.results;
-      this.hasMore = data.has_more || false;
+      this.hasMore = data.has_more ?? data.pagination?.more ?? false;
       this._renderResults(append);
     } catch (err) {
       if (err.name === 'AbortError') return; // request was intentionally cancelled
