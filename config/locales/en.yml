@@ -1,0 +1,5 @@
+en:
+  remote_select:
+    placeholder: "Type to search..."
+    empty_text: "No results found"
+    loading_text: "Loading..."
