@@ -138,7 +138,16 @@ Override CSS custom properties — no need to edit the stylesheet:
 3. **Do NOT** forget the `text` key in JSON results — `name` won't work, must be `text`
 4. **Do NOT** skip `selected_text` when setting `selected_value` — both are needed for preselection display
 5. **Do NOT** add Stimulus controllers — the component auto-initializes on `DOMContentLoaded` and `turbo:load`
-
+6. **Do NOT** manually `include RemoteSelect::ViewHelpers` in `ApplicationHelper` —
+   the constant is not yet defined at that load stage and you'll get a `NameError`.
+   The engine registers the helper automatically via `on_load(:action_view)`.
+   If for any reason that doesn't fire, add an initializer instead:
+ ```ruby
+ # config/initializers/remote_select.rb
+ Rails.application.config.to_prepare do
+   ActionView::Base.include RemoteSelect::ViewHelpers
+ end
+ ```
 ## JS API (for programmatic use)
 
 ```js
