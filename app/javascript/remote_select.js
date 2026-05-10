@@ -54,7 +54,10 @@ class RemoteSelect {
     this._createUI();
     this._setupEventListeners();
     if (this.options.dependsOn) this._setupDependency();
-    if (this.selectedValue && this.selectedText) this._updateTriggerDisplay();
+    if (this.selectedValue && this.selectedText) {
+      this.element.value = this.selectedValue;
+      this._updateTriggerDisplay();
+    }
   }
 
   _createUI() {
