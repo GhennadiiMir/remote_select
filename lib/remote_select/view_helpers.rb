@@ -47,6 +47,7 @@ module RemoteSelect
       html_options[:data] ||= {}
       html_options[:data].merge!(data_attrs)
       html_options[:class] = [html_options[:class], "remote-select-input"].compact.join(" ")
+      html_options[:value] ||= selected_value if selected_value.present?
 
       form.hidden_field(attribute, html_options)
     end

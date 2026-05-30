@@ -71,6 +71,13 @@ class RemoteSelect::ViewHelpersTest < Minitest::Test
     assert_match 'data-selected-text="Acme Corp"', html
   end
 
+  def test_selected_value_written_to_hidden_input_value
+    form = build_form
+    html = remote_select(form, :company_id, "/search", selected_value: 42)
+
+    assert_match 'value="42"', html
+  end
+
   def test_preselected_value_falls_back_to_model_attribute
     article = FakeArticle.new
     article.company_id = 99

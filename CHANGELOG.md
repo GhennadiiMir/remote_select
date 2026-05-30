@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.1] - 2026-05-30
+
+### Fixed
+- `selected_value` is now written to the hidden input's `value` attribute so forms with a pre-selected value submit correctly without JS interaction.
+- JS initialisation now explicitly sets `element.value` before calling `_updateTriggerDisplay()`, so the hidden field carries the correct value even when the widget renders before any user interaction.
+
 ## [0.2.0] - 2026-03-20
 
 ### Added

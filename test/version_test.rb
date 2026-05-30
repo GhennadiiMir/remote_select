@@ -11,7 +11,7 @@ class RemoteSelect::VersionTest < Minitest::Test
     assert_match(/\A\d+\.\d+\.\d+\z/, RemoteSelect::VERSION)
   end
 
-  def test_version_is_0_2_0
-    assert_equal "0.2.0", RemoteSelect::VERSION
+  def test_version_is_0_2_1
+    assert_equal "0.2.1", RemoteSelect::VERSION
   end
 end
